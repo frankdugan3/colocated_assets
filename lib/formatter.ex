@@ -1,24 +1,14 @@
 defmodule ColocatedAssets.Formatter do
   @moduledoc """
   Formats JS and CSS files with [Prettier](https://prettier.io/).
-
-  Prettier will need to be installed on your system.
-
-  To use, add it to your `.formatter.exs`:
-
-  ```elixir
-  [
-    # ...
-    # If prettier is not in your path, you can specify the binary:
-    plugins: [Phoenix.LiveView.HTMLFormatter, ColocatedAssets.Formatter]
-  ]
-  ```
   """
 
   @behaviour Mix.Tasks.Format
 
+  @doc false
   def features(_opts), do: [sigils: [:JS, :CSS, :HOOK], extensions: [".js", ".css"]]
 
+  @doc false
   def format(contents, opts) do
     prettier = opts[:prettier_bin] || "prettier"
     sigil = opts[:sigil]

@@ -1,34 +1,11 @@
 defmodule ColocatedAssets.Registry do
   @moduledoc """
-  Extract CSS and JS Hooks from modules by adding them to a registry:
-
-  ```elixir
-  defmodule MyAppWeb.ColocatedAssets do
-    use ColocatedAssets.Registry,
-      extract_modules: [
-        MyAppWeb.CoreComponents
-      ]
-  end
-  ```
+  Extracts CSS and JS Hooks from registered modules.
 
   - Content from all modules `~CSS` and `~CSSEEX` sigils will be compiled/extracted into `assets/css/[registry module].css`.
   - Content from all modules `~HOOK` sigils will be extracted into `assets/js/hook/[registry module]_hooks.js`
 
   You can then import them into your `app.css` and `app.js` files.
-
-  ```css
-  @import './colocated_assets.css';
-  ```
-
-  ```js
-  import * as ColocatedHooks './colocated_assets.css';
-
-  // ...
-  hooks: {
-    AnotherHook,
-    ...ColocatedHooks
-  }
-  ```
   """
 
   @doc false
@@ -56,11 +33,13 @@ defmodule ColocatedAssets.Registry do
     end
   end
 
+  @doc false
   defmacro __before_compile__(env) do
     ColocatedAssets.Registry.write_css(env.module, env.file)
     ColocatedAssets.Registry.write_hooks(env.module, env.file)
   end
 
+  @doc false
   def write_css(module, file) do
     css_file = css_file(module)
     File.mkdir_p!(Path.dirname(css_file))
@@ -83,6 +62,7 @@ defmodule ColocatedAssets.Registry do
     """)
   end
 
+  @doc false
   def write_hooks(module, file) do
     hooks_file = hooks_file(module)
     File.mkdir_p!(Path.dirname(hooks_file))
