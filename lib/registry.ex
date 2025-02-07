@@ -83,7 +83,8 @@ defmodule ColocatedAssets.Registry do
     |> Path.join("assets")
   end
 
-  defp filename(module) do
+  @doc false
+  def filename(module) do
     module
     |> Module.split()
     |> List.last()
