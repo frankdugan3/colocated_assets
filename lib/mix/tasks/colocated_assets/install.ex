@@ -1,6 +1,6 @@
 if Code.ensure_loaded?(Igniter) do
   defmodule Mix.Tasks.ColocatedAssets.Install do
-    @moduledoc "Installs colocated assets by adding the `ColocatedAssets.Formatter` plugin, creating a basic registry, and adding your `CoreComponents` to it."
+    @moduledoc "Automatic installation of `ColocatedAssets` via `Igniter`."
     @shortdoc @moduledoc
 
     use Igniter.Mix.Task
@@ -26,7 +26,6 @@ if Code.ensure_loaded?(Igniter) do
         |> Module.concat("CoreComponents")
 
       igniter
-      |> Igniter.compose_task("spark.install")
       |> Igniter.Project.Formatter.add_formatter_plugin(ColocatedAssets.Formatter)
       |> Igniter.Project.Module.find_and_update_module!(core_components_module, fn zipper ->
         zipper
@@ -42,37 +41,39 @@ if Code.ensure_loaded?(Igniter) do
           #{core_components_module}
         ]
       """)
-      |> Igniter.add_notice("""
-      Import extracted CSS in your app.css:
-
-        import './#{extracted_assets_name}.css';
-      """)
+      |> Igniter.update_file("assets/css/#{extracted_assets_name}.css", fn css ->
+        css <> "\nimport './#{extracted_assets_name}.css'"
+      end)
       |> Igniter.add_notice("""
       Import extracted JS hooks in your app.js:
 
-        import * as ColocatedHooks from './hooks/#{extracted_assets_name}.js';
-        
+        import * as ColocatedAssetsHooks from './hooks/#{extracted_assets_name}_hooks';
+
         // ...
         hooks: {
-          ...ColocatedHooks
+          ...ColocatedAssetsHooks,
         }
       """)
     end
   end
 else
   defmodule Mix.Tasks.ColocatedAssets.Install do
-    @moduledoc "Installs colocated assets by adding the `ColocatedAssets.Formatter` plugin, creating a basic registry, and adding it to your `CoreComponents` file."
+    @moduledoc "Automatic installation of `ColocatedAssets` via `Igniter`."
     @shortdoc @moduledoc
 
     use Mix.Task
 
     def run(_argv) do
       Mix.shell().error("""
-      The task 'colocated_assets.install' requires igniter to be run.
+      The colocated_assets installer requires igniter.
 
-      Please install igniter and try again.
+      Add igniter to your mix.exs deps:
 
-      For more information, see: https://hexdocs.pm/igniter
+        {:igniter, "~> 0.5", only: [:dev, :test]},
+
+      Then, run the installer:
+
+        mix igniter.install colocated_assets
       """)
 
       exit({:shutdown, 1})
