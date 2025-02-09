@@ -5,7 +5,7 @@
 [![hex.pm](https://img.shields.io/hexpm/dt/colocated_assets.svg)](https://hex.pm/packages/colocated_assets)
 [![github.com](https://img.shields.io/github/last-commit/frankdugan3/colocated_assets.svg)](https://github.com/frankdugan3/colocated_assets)
 
-> An experimental solution for colocated assets in Phoenix LiveView.
+An experimental solution for colocated assets in Phoenix LiveView.
 
 > #### Experimental Library {: .warning}
 >

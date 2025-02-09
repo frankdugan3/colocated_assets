@@ -35,7 +35,7 @@ mix igniter.install colocated_assets
    ```elixir
    def deps do
      [
-      {:colocated_assets, "~> 0.1"},
+       {:colocated_assets, "~> 0.1"},
      ]
    end
    ```
@@ -80,12 +80,11 @@ mix igniter.install colocated_assets
 6. Import the extracted hooks in `app.js`:
 
    ```js
-   import * as ColocatedHooks './colocated_assets.css';
+   import * as ColocatedAssetsHooks './hooks/colocated_assets_hooks';
 
    // ...
    hooks: {
-     AnotherHook,
-     ...ColocatedHooks
+     ...ColocatedAssetsHooks,
    }
    ```
 
@@ -94,7 +93,3 @@ mix igniter.install colocated_assets
 ## Next Steps
 
 To enable syntax highlighting in your editor, refer to the [syntax highlighting guide](syntax-highlighting.html).
-
-```
-
-```

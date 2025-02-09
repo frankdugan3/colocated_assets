@@ -3,7 +3,7 @@ defmodule ColocatedAssets.Registry do
   Extracts CSS and JS Hooks from registered modules.
 
   - Content from all modules `~CSS` and `~CSSEEX` sigils will be compiled/extracted into `assets/css/[registry module].css`.
-  - Content from all modules `~HOOK` sigils will be extracted into `assets/js/hook/[registry module]_hooks.js`
+  - Content from all modules `~HOOK` sigils will be extracted into `assets/js/hooks/[registry module]_hooks.js`
 
   You can then import them into your `app.css` and `app.js` files.
   """
