@@ -1,19 +1,19 @@
 defmodule ColocatedAssets.Formatter do
   @moduledoc """
-  Formats JS and CSS files with [Prettier](https://prettier.io/).
+  Formats ~HOOK and ~CSS with [Prettier](https://prettier.io/).
   """
 
   @behaviour Mix.Tasks.Format
 
   @doc false
-  def features(_opts), do: [sigils: [:JS, :CSS, :HOOK], extensions: [".js", ".css"]]
+  def features(_opts), do: [sigils: [:CSS, :HOOK]]
 
   @doc false
   def format(contents, opts) do
     prettier = opts[:prettier_bin] || "prettier"
     sigil = opts[:sigil]
 
-    if sigil in [:JS, :CSS, :HOOK] and opts[:modifiers] === ~c"noformat" do
+    if sigil in [:CSS, :HOOK] and opts[:modifiers] === ~c"noformat" do
       contents
     else
       c = """
@@ -29,7 +29,6 @@ defmodule ColocatedAssets.Formatter do
 
       parser =
         case sigil do
-          :JS -> "acorn"
           :HOOK -> "acorn"
           :CSS -> "css"
         end
