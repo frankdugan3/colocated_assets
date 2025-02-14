@@ -21,3 +21,5 @@ colocated_assets-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+/assets/

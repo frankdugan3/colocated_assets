@@ -27,6 +27,7 @@ if Code.ensure_loaded?(Igniter) do
 
       igniter
       |> Igniter.Project.Formatter.add_formatter_plugin(ColocatedAssets.Formatter)
+      |> Igniter.Project.Formatter.import_dep(:colocated_assets)
       |> Igniter.Project.Module.find_and_update_module!(core_components_module, fn zipper ->
         zipper
         |> Igniter.Code.Module.move_to_use(Phoenix.Component)
@@ -41,8 +42,14 @@ if Code.ensure_loaded?(Igniter) do
           #{core_components_module}
         ]
       """)
-      |> Igniter.update_file("assets/css/#{extracted_assets_name}.css", fn css ->
-        css <> "\nimport './#{extracted_assets_name}.css'"
+      |> Igniter.update_file("assets/css/app.css", fn source ->
+        source
+        |> Rewrite.Source.update(
+          :content,
+          fn content ->
+            content <> "\n@import './#{extracted_assets_name}.css';"
+          end
+        )
       end)
       |> Igniter.add_notice("""
       Import extracted JS hooks in your app.js:
