@@ -1,4 +1,6 @@
 defmodule ColocatedAssetsTest do
-  use ExUnit.Case
-  doctest ColocatedAssets
+  use ExUnit.Case, async: true
+  doctest ColocatedAssets, import: true
+
+  use ColocatedAssets
 end

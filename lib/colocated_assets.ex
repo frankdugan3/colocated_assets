@@ -34,31 +34,20 @@ defmodule ColocatedAssets do
       persist: true
     )
 
-    Module.register_attribute(__CALLER__.module, :css_assigns,
+    Module.register_attribute(__CALLER__.module, :__colocated_assets_hooks__,
       accumulate: true,
       persist: true
     )
 
-    Module.register_attribute(__CALLER__.module, :__colocated_assets_hooks__,
-      accumulate: true,
-      persist: true
+    Module.register_attribute(__CALLER__.module, :__colocated_assets_eex_assigns__,
+      accumulate: true
     )
 
     quote bind_quoted: [module: __CALLER__.module] do
       import ColocatedAssets
 
       defmacro __before_compile__(env) do
-        for {:__colocated_assets_css__, css} <- __MODULE__.__info__(:attributes) do
-          Module.put_attribute(env.module, :__colocated_assets_css__, css)
-        end
-
-        for {:css_assigns, assign} <- __MODULE__.__info__(:attributes) do
-          Module.put_attribute(env.module, :__colocated_assets_css_assigns__, assign)
-        end
-
-        for {:__colocated_assets_hooks__, hook} <- __MODULE__.__info__(:attributes) do
-          Module.put_attribute(env.module, :__colocated_assets_hooks__, hook)
-        end
+        :ok
       end
     end
   end
@@ -84,27 +73,44 @@ defmodule ColocatedAssets do
     expr
   end
 
-  @doc ~S|
+  @doc """
   A sigil for CSS in EEx.
 
   - Syntax highlighting
-  - Optional template compilation to CSS file with `ColocatedAssets.Registry`
-  - Assigns via `@css_assigns`
+  - Automatic template compilation
+  - Assigns via `assign_colocated_eex :key, "value"`
+  - Optional extraction to CSS file with `ColocatedAssets.Registry`
+  - Formatting can be disabled with the `noformat` option.
 
+  ## Examples
 
-  ```elixir
-  @css_assigns [colors: [{"primary", "rebeccapurple"}, {"secondary", "slategray"}]]
-  ~CSSEEX"""
-  <%= for {color, value} <- colors %>--color-<%= color %>: <%= value %>;
+      iex> assign_colocated_eex :colors,
+      ...>   [{"primary", "rebeccapurple"}, {"secondary", "slategray"}]
+      iex> ~CSSEEX\"\"\"
+      ...> <%= for {color, value} <- @colors do %>--color-<%= color %>: <%= value %>;
+      ...> <% end %>
+      ...> \"\"\"
+      \"\"\"
+      --color-primary: rebeccapurple;
+      --color-secondary: slategray;
+      \"\"\"
   """
-  ```
-  
-  Formatting can be disabled with the `noformat` option.
-  |
-  defmacro sigil_CSSEEX({:<<>>, _meta, [expr]}, modifiers)
+  defmacro sigil_CSSEEX({:<<>>, meta, [expr]}, modifiers)
            when modifiers == [] or modifiers == ~c"noformat" do
-    Module.put_attribute(__CALLER__.module, :__colocated_assets_css__, {:eex, expr})
-    {:eex, expr}
+    assigns = Module.get_attribute(__CALLER__.module, :__colocated_assets_eex_assigns__)
+
+    opts = [
+      file: __CALLER__.file,
+      line: __CALLER__.line + 1,
+      indentation: meta[:indentation] || 0,
+      trim: true
+    ]
+
+    compiled = EEx.eval_string(expr, [assigns: assigns], opts)
+
+    Module.put_attribute(__CALLER__.module, :__colocated_assets_css__, compiled)
+
+    compiled
   end
 
   @doc ~S|
@@ -128,5 +134,9 @@ defmodule ColocatedAssets do
            when modifiers == [] or modifiers == ~c"noformat" do
     Module.put_attribute(__CALLER__.module, :__colocated_assets_hooks__, expr)
     expr
+  end
+
+  defmacro assign_colocated_eex(key, value) do
+    Module.put_attribute(__CALLER__.module, :__colocated_assets_eex_assigns__, {key, value})
   end
 end
