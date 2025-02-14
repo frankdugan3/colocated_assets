@@ -38,7 +38,11 @@ defmodule ColocatedAssets.MixProject do
         groups_for_extras: [
           Tutorials: [~r'documentation/tutorials']
         ]
-      ]
+      ],
+      preferred_cli_env: [
+        "test.watch": :test
+      ],
+      dialyzer: [plt_add_apps: [:mix]]
     ]
   end
 
@@ -66,8 +70,14 @@ defmodule ColocatedAssets.MixProject do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.34", only: :dev, runtime: false},
-      {:igniter, "~> 0.5", optional: true}
+      {:credo, ">= 0.0.0", only: [:dev], runtime: false},
+      {:dialyxir, ">= 0.0.0", only: [:dev], runtime: false},
+      {:doctor, ">= 0.0.0", only: [:dev], runtime: false},
+      {:ex_check, "~> 0.14.0", only: [:dev], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
+      {:igniter, "~> 0.5", optional: true},
+      {:mix_audit, ">= 0.0.0", only: [:dev], runtime: false},
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 end
