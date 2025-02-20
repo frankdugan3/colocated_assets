@@ -35,7 +35,7 @@ mix igniter.install colocated_assets
    ```elixir
    def deps do
      [
-       {:colocated_assets, "~> 0.1"},
+       {:colocated_assets, "~> 0.0.1"},
      ]
    end
    ```
@@ -44,10 +44,11 @@ mix igniter.install colocated_assets
 
    ```elixir
    [
-    # ...
-    # If prettier is not in your path, you can specify the binary:
-    # prettier_bin: "/custom/path/to/prettier",
-    plugins: [Phoenix.LiveView.HTMLFormatter, ColocatedAssets.Formatter]
+     # ...
+     # If prettier is not in your path, you can specify the binary:
+     # prettier_bin: "/custom/path/to/prettier",
+     plugins: [Phoenix.LiveView.HTMLFormatter, ColocatedAssets.Formatter],
+     import_deps: [:colocated_assets]
    ]
    ```
 
@@ -86,6 +87,13 @@ mix igniter.install colocated_assets
    hooks: {
      ...ColocatedAssetsHooks,
    }
+   ```
+
+7. Finally, you may wish to add the generated files to your `.gitignore`:
+
+   ```gitignore
+   assets/css/colocated_assets.css
+   assets/js/hooks/colocated_assets_hooks.js
    ```
 
 <!-- tabs-close -->

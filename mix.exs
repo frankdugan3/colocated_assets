@@ -21,12 +21,13 @@ defmodule ColocatedAssets.MixProject do
         },
         licenses: ["MIT"],
         files: [
-          "lib",
-          "documentation",
+          ".formatter.exs",
           "CHANGELOG*",
           "LICENSE*",
-          "mix.exs",
-          ".formatter.exs"
+          "README*",
+          "documentation",
+          "lib",
+          "mix.exs"
         ]
       ],
       docs: [
@@ -36,7 +37,7 @@ defmodule ColocatedAssets.MixProject do
         extra_section: "Guides",
         extras: extras(),
         groups_for_extras: [
-          Tutorials: [~r'documentation/tutorials']
+          Guides: [~r'documentation/guides']
         ]
       ],
       preferred_cli_env: [
@@ -51,7 +52,7 @@ defmodule ColocatedAssets.MixProject do
       [
         {"documentation/about.md", [default: true]},
         "CHANGELOG.md",
-        "documentation/tutorials/get-started.md"
+        "documentation/guides/get-started.md"
       ]
 
     unordered = Path.wildcard("documentation/**/*.{md,cheatmd,livemd}")
