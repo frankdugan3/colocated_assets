@@ -39,7 +39,7 @@ if Code.ensure_loaded?(Igniter) do
       |> Igniter.Project.Module.create_module(colocated_assets_module, """
       use ColocatedAssets.Registry,
         extract_modules: [
-          #{core_components_module}
+        #{core_components_module |> to_string() |> String.trim_leading("Elixir.")}
         ]
       """)
       |> Igniter.update_file("assets/css/app.css", fn source ->
@@ -48,6 +48,19 @@ if Code.ensure_loaded?(Igniter) do
           :content,
           fn content ->
             content <> "\n@import './#{extracted_assets_name}.css';"
+          end
+        )
+      end)
+      |> Igniter.update_file(".gitignore", fn source ->
+        source
+        |> Rewrite.Source.update(
+          :content,
+          fn content ->
+            content <>
+              """
+              assets/css/#{extracted_assets_name}.css
+              assets/js/hooks/#{extracted_assets_name}_hooks.js
+              """
           end
         )
       end)

@@ -78,39 +78,34 @@ defmodule ColocatedAssets do
 
   - Syntax highlighting
   - Automatic template compilation
-  - Assigns via `assign_colocated_eex :key, "value"`
+  - Compile-time assigns via `assign_colocated_eex :key, "value"`
   - Optional extraction to CSS file with `ColocatedAssets.Registry`
   - Formatting can be disabled with the `noformat` option.
-
-  ## Examples
-
-      iex> assign_colocated_eex :colors,
-      ...>   [{"primary", "rebeccapurple"}, {"secondary", "slategray"}]
-      iex> ~CSSEEX\"\"\"
-      ...> <%= for {color, value} <- @colors do %>--color-<%= color %>: <%= value %>;
-      ...> <% end %>
-      ...> \"\"\"
-      \"\"\"
-      --color-primary: rebeccapurple;
-      --color-secondary: slategray;
-      \"\"\"
   """
   defmacro sigil_CSSEEX({:<<>>, meta, [expr]}, modifiers)
            when modifiers == [] or modifiers == ~c"noformat" do
-    assigns = Module.get_attribute(__CALLER__.module, :__colocated_assets_eex_assigns__)
+    quote bind_quoted: binding() do
+      assigns =
+        @__colocated_assets_eex_assigns__
+        |> Enum.map(fn {key, value} ->
+          # 👋 Feel free to tell me a better way to do this... 🙈🙉🙊
+          {value, _bindings} = Code.eval_quoted(value, [], __ENV__)
+          {key, value}
+        end)
 
-    opts = [
-      file: __CALLER__.file,
-      line: __CALLER__.line + 1,
-      indentation: meta[:indentation] || 0,
-      trim: true
-    ]
+      compiled =
+        EEx.eval_string(expr, [assigns: assigns],
+          engine: EEx.SmartEngine,
+          file: __ENV__.file,
+          line: __ENV__.line + 1,
+          indentation: meta[:indentation] || 0,
+          trim: true
+        )
 
-    compiled = EEx.eval_string(expr, [assigns: assigns], opts)
+      @__colocated_assets_css__ compiled
 
-    Module.put_attribute(__CALLER__.module, :__colocated_assets_css__, compiled)
-
-    compiled
+      compiled
+    end
   end
 
   @doc ~S|
@@ -136,7 +131,12 @@ defmodule ColocatedAssets do
     expr
   end
 
-  defmacro assign_colocated_eex(key, value) do
+  defmacro assign_colocated_eex(key, value) when is_atom(key) do
+    for {^key, _value} <-
+          Module.get_attribute(__CALLER__.module, :__colocated_assets_eex_assigns__) do
+      raise "@#{key} already assigned"
+    end
+
     Module.put_attribute(__CALLER__.module, :__colocated_assets_eex_assigns__, {key, value})
   end
 end
