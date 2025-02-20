@@ -73,7 +73,7 @@ defmodule ColocatedAssets.MixProject do
       {:credo, ">= 0.0.0", only: [:dev], runtime: false},
       {:dialyxir, ">= 0.0.0", only: [:dev], runtime: false},
       {:doctor, ">= 0.0.0", only: [:dev], runtime: false},
-      {:ex_check, "~> 0.14.0", only: [:dev], runtime: false},
+      {:ex_check, "~> 0.16.0", only: [:dev], runtime: false},
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       {:git_ops, "~> 2.0", only: [:dev]},
       {:igniter, "~> 0.5", optional: true},
