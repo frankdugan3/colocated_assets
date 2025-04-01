@@ -12,14 +12,10 @@ This guide steps through the installation process for ColocatedAssets.
 
 ### Using Igniter (recommended)
 
-The easiest way to install is to use Igniter. If Igniter is not already installed in your project, add the dependency:
+The easiest way to install is to use Igniter. If you haven't already installed it on your system:
 
-```elixir
-def deps do
-  [
-    {:igniter, "~> 0.5", only: [:dev, :test]},
-  ]
-end
+```sh
+mix archive.install hex igniter_new
 ```
 
 Then, invoke the installer:

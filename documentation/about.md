@@ -1,9 +1,11 @@
 # About
 
-[![hex.pm](https://img.shields.io/hexpm/l/colocated_assets.svg)](https://hex.pm/packages/colocated_assets)
-[![hex.pm](https://img.shields.io/hexpm/v/colocated_assets.svg)](https://hex.pm/packages/colocated_assets)
-[![hex.pm](https://img.shields.io/hexpm/dt/colocated_assets.svg)](https://hex.pm/packages/colocated_assets)
-[![github.com](https://img.shields.io/github/last-commit/frankdugan3/colocated_assets.svg)](https://github.com/frankdugan3/colocated_assets)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT)
+[![Hex version badge](https://img.shields.io/hexpm/v/colocated_assets.svg)](https://hex.pm/packages/colocated_assets)
+[![Hex downloads badge](https://img.shields.io/hexpm/dt/colocated_assets.svg)](https://hex.pm/packages/colocated_assets)
+[![Hexdocs badge](https://img.shields.io/badge/docs-hexdocs-purple)](https://hexdocs.pm/colocated_assets)
+[![Last commit](https://img.shields.io/github/last-commit/frankdugan3/colocated_assets.svg)](https://github.com/frankdugan3/colocated_assets)
+![CI Status](https://github.com/frankdugan3/colocated_assets/workflows/CI/badge.svg)
 
 An experimental solution for colocated assets in Phoenix LiveView.
 
